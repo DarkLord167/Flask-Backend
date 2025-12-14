@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+    <head>
+
+        <style>
+            body {
+                font-family: "JetBrains Mono";
+                margin: 50px;
+            }
+        </style>
+
+        {% if title %}
+            <title>{{ title.capitalize() }} - Microblog</title>
+        {% else %}
+            <title>Welcome to Microblog</title>
+        {% endif %}
+
+
+    </head>
+
+    <body>
+        
+        {% with flashed_messages = get_flashed_messages() %}
+            {% if flashed_messages %}
+                <ul>
+                    {% for message in flashed_messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h1>{{ title.upper() }}</h1>
+        
+        <nav>
+            
+            <a href="{{ url_for('index') }}">Home</a>
+            <a href="{{ url_for('explore') }}">Explore</a>
+            {% if current_user.is_authenticated %}
+                {% set unread_message_count = current_user.get_unread_message_count() %}
+                <a href="{{ url_for('profile', username=current_user.username) }}">Profile</a>
+                <a href="{{ url_for('logout') }}">Log out</a>
+                <a href="{{ url_for('chats')}}">
+                    Messages 
+                    <span id="message-count" style="color: white; text-align: center; background-color: rgb(134, 2, 2); border-radius: 10px; width: 20px; padding: 1px; display: inline-block; visibility: {% if unread_message_count %} visible {% else %} hidden {% endif %}" >
+                        {{ unread_message_count }}
+                    </span>
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}">Log In</a>
+            {% endif %}
+
+        </nav>
+        <hr>
+
+        {% block content %}{% endblock %}
+        {{ moment.include_moment() }} 
+
+        {% if current_user.is_authenticated %}
+            <script>
+                function set_message_count(n) {
+                    const el = document.getElementById('message-count');
+                    el.innerHTML = n;
+                    el.style.visibility = n ? "visible" : "hidden";
+                }
+
+                function get_notifications() {
+                    let since = 0;
+                    setInterval(async () => {
+                        const response = await fetch("{{ url_for('notifications') }}?since=" + since)
+                        const notifications = await response.json()
+                        for (let i=0; i<notifications.length; i++) {
+                            if (notifications[i].name == "unread_message_count") {
+                                set_message_count(notifications[i].data)
+                            }
+                            since = notifications[i].timestamp
+                        }
+                        console.log(since)
+                    }, 10000)
+                }
+
+                document.addEventListener('DOMContentLoaded', get_notifications)
+            </script>
+        {% endif %}
+    </body>
+    
+</html>

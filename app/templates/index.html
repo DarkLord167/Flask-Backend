@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Hello, {{ current_user.username.capitalize() }}</h2>
+
+    <form action="" method="post">
+        {{ form.hidden_tag() }}
+        {{ form.body.label }}<br>
+        {{ form.body(cols=40, rows=8, maxlength=256, placeholder="Write your message here...", style="resize: none;")}}<br>
+        {% for error in form.body.error %}
+            <span style="color:red;">error</span>
+        {% endfor %}
+        {{ form.submit() }}
+    </form>
+    <hr>
+
+    {% for post in posts %}
+        {% include '_post.html' %}
+    {% endfor %}
+    
+{% endblock %}

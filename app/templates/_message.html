@@ -1,0 +1,12 @@
+<article style="margin-bottom: 10px;">
+        <div style="display: flex; flex-direction: {% if message.author == current_user %} row-reverse {% else %} row {% endif %}; align-items: center;">
+            <a href="{{ url_for('profile', username=message.author.username) }}">
+                <img src="{{ '/static/img/user_profile_img.png' }}" style="width:64px; height:64px;">
+            </a>
+            <p style="padding-left: 10px;">
+                {{ message.author.username }}<br>
+                {{ message.message }}<br>
+                {{ moment(message.timestamp).format('LLL') }}
+            </p>
+        </div>
+</article>

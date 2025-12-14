@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="display: flex; flex-direction: column;">
+    <div style="overflow-y: scroll; flex-grow: 1;">
+        <h1>Chat with {{ username }}</h1>
+            {% for message in messages %}
+                {% include "_message.html" %}
+            {% endfor %}
+    </div>
+    <div>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            {{ form.message(rows=8, placeholder="Write your message to " ~ username.capitalize(), style="width:100%") }}
+            {{ form.submit() }}
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

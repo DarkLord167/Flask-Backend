@@ -1,0 +1,12 @@
+<table>
+    <tr>
+        <td>
+            <a href=" {{ url_for('profile', username=post.author.username) }}"><img src="/static/img/user_profile_img.png" alt="User profile image" width="64px" height="65px"></a>
+        </td>
+        <td>
+            <strong>{{ post.author.username }} says:</strong><br>
+            <p>{{ post.body }}</p>
+            <p>{{ moment(post.timstamp).format('LLLL') }}</p>
+        </td>
+    </tr>
+</table>

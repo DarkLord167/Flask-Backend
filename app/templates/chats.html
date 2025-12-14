@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% for chat in chat_list %}
+        {% include "_chat.html" %}
+    {% endfor %}
+{% endblock %}

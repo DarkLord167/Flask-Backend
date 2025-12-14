@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <img src="/static/img/user_profile_img.png" alt="user profile image" width="128" height="128">
+        <p>Username: {{ user.username }}</p>
+        <p>Email Adress: {{ user.email }}</p>
+        <p>About: {{ user.about_me }}</p>
+        <p>Following: {{user.following_count() }} | Followers: {{ user.followers_count() }} </p>
+        <p>Last seen: 
+            {% if not user.last_seen %}
+                a long time ago
+            {% else %}
+                {{ moment(user.last_seen).fromNow() }}
+            {% endif %}
+        </p>
+        {% if user.id == current_user.id %}
+            <a href="{{ url_for('edit_profile') }}">Edit your profile</a>
+        {% else %}
+            {% if not current_user.is_following(user) %}
+                <span>
+                    <form action="{{ url_for('follow', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value="Follow") }}
+                    </form>
+                </span>
+            {% else %}
+                <span>
+                    <form action="{{ url_for('unfollow', username=user.username) }}" method="post">
+                        {{ form.hidden_tag() }}
+                        {{ form.submit(value="Unfollow") }}
+                    </form>
+                </span>
+                {% endif %}
+            <a href="{{ url_for('send_message', username=user.username)}}">Send Message</a>
+        {% endif %}
+        <hr>
+        {% for post in posts %}
+            {% include '_post.html' %}
+        {% endfor %}
+    </div>
+{% endblock %}
